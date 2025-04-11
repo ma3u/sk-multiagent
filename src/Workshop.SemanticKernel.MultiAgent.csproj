@@ -13,7 +13,7 @@
         <Company>digitalnatives Berlin</Company>
         <Product>Workshop.SemanticKernel.MultiAgent</Product>
         <NoWarn>$(NoWarn);CA2007;IDE1006;SKEXP0001;SKEXP0110;SKEXP0070;OPENAI001</NoWarn>
-      <UserSecretsId>918617e6-46f9-4128-b4d8-cfa004bf841b</UserSecretsId>
+    <UserSecretsId>e563b3a8-80e1-4d74-9b04-9c0f272fa8d7</UserSecretsId>
   </PropertyGroup>
 
     <ItemGroup>

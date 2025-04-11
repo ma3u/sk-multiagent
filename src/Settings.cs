@@ -7,7 +7,8 @@ namespace Workshop.SemanticKernel.MultiAgent
         OpenAI,
         AzureOpenAI,
         Ollama,
-        Gemini
+        Gemini,
+        Perplexity
     }
     
     public class Settings
@@ -73,6 +74,9 @@ namespace Workshop.SemanticKernel.MultiAgent
                 case TransformerBackend.Gemini:
                     return this.GetSettings<TransformerBackendSettings>("GoogleAI");
                 case TransformerBackend.Ollama:
+                    return this.GetSettings<TransformerBackendSettings>("Ollama");
+                case TransformerBackend.Perplexity:
+                    return this.GetSettings<TransformerBackendSettings>("Perplexity");
                 default:
                     return this.GetSettings<TransformerBackendSettings>("Ollama");
             }

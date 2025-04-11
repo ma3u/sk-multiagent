@@ -50,7 +50,8 @@ namespace Workshop.SemanticKernel.MultiAgent
             else
             {
                 _logger.LogWarning($"Tool '{toolName}' is not registered.");
-                return null;
+                // Instead of returning null, throw an exception or return a default empty plugin
+                return KernelPluginFactory.CreateFromObject(new object(), toolName);
             }
         }
 

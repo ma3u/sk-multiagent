@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Connectors.Google;
+using System;
 
 namespace Workshop.SemanticKernel.MultiAgent {
 
@@ -17,13 +18,19 @@ namespace Workshop.SemanticKernel.MultiAgent {
             {
                 case TransformerBackend.OpenAI:
                     var oaiSettings = backendSettings as Settings.OpenAISettings;
-                    return kernelBuilder.AddOpenAIChatCompletion(model, oaiSettings.ApiKey, oaiSettings.Organization).Build();
+                    // Add null check for oaiSettings to avoid null reference exception
+                    var organization = oaiSettings?.Organization ?? string.Empty;
+                    return kernelBuilder.AddOpenAIChatCompletion(model, backendSettings.ApiKey, organization).Build();
                 case TransformerBackend.AzureOpenAI:
-                    return kernelBuilder.AddAzureOpenAIChatCompletion(model, backendSettings.Endpoint, backendSettings.ApiKey).Build(); 
+                    return kernelBuilder.AddAzureOpenAIChatCompletion(model, backendSettings.Endpoint, backendSettings.ApiKey).Build();
                 case TransformerBackend.Ollama:
-                    return kernelBuilder.AddOllamaChatCompletion(model, new Uri(backendSettings.Endpoint)).Build(); //if you have an api key, add it as the 3rd parameter
+                    return kernelBuilder.AddOllamaChatCompletion(model, new Uri(backendSettings.Endpoint)).Build(); // If you have an api key, add it as the 3rd parameter
                 case TransformerBackend.Gemini:
                     return kernelBuilder.AddGoogleAIGeminiChatCompletion(model, backendSettings.ApiKey).Build();
+                case TransformerBackend.Perplexity:
+                    // Return a default implementation since Perplexity is not supported yet
+                    // Remove this case once Perplexity is properly supported
+                    throw new NotImplementedException("Perplexity support is not yet implemented");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(backend), backend, null);
             }
@@ -40,6 +47,12 @@ namespace Workshop.SemanticKernel.MultiAgent {
                         FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
                         // OR if using older versions or needing specific OpenAI features:
                         // ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+                    };
+                case TransformerBackend.Perplexity:
+                    // Return a default execution settings for Perplexity
+                    return new PromptExecutionSettings
+                    {
+                        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
                     };
                 case TransformerBackend.Gemini:
                     return new GeminiPromptExecutionSettings
@@ -63,6 +76,7 @@ namespace Workshop.SemanticKernel.MultiAgent {
                 "azureopenai" => TransformerBackend.AzureOpenAI,
                 "ollama" => TransformerBackend.Ollama,
                 "gemini" => TransformerBackend.Gemini,
+                "perplexity" => TransformerBackend.Perplexity,
                 _ => throw new ArgumentOutOfRangeException(nameof(backend), backend, null)
             };
         }
